@@ -53,13 +53,13 @@ class Property(models.Model):
     ]
 
     titulo = models.CharField(max_length=60)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
-    cuartos = models.PositiveSmallIntegerField()
-    metros_cuadrados = models.PositiveIntegerField()
-    barrio = models.CharField(max_length=50, choices=BARRIOS_CHOICES)
-    precio = models.PositiveIntegerField()
-    gastos_comunes = models.PositiveIntegerField()
-    direccion = models.CharField(max_length=100)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, null=True)
+    cuartos = models.PositiveSmallIntegerField(null=True)
+    metros_cuadrados = models.PositiveIntegerField(null=True)
+    barrio = models.CharField(max_length=50, choices=BARRIOS_CHOICES, null=True)
+    precio = models.PositiveIntegerField(null=True)
+    gastos_comunes = models.PositiveIntegerField(null=True)
+    direccion = models.CharField(max_length=100, null=True)
     url = models.CharField(max_length=200)
 
     def __str__(self):

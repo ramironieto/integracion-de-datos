@@ -23,7 +23,7 @@ def get_new_properties_meli():
                     "titulo": result["title"],
                     "tipo": get_attribute_value(result["attributes"], "PROPERTY_TYPE"),
                     "cuartos": get_attribute_value(result["attributes"], "BEDROOMS"),
-                    "metros_cuadrados": get_attribute_value(result["attributes"], "COVERED_AREA"),
+                    "metros_cuadrados": get_attribute_value(result["attributes"], "COVERED_AREA")[:-3],
                     "barrio": result["address"]["city_name"],
                     "precio": result["price"],
                     "gastos_comunes": get_attribute_value(result["attributes"], "MAINTENANCE_FEE"),

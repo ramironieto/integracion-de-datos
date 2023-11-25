@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from .utils.scrapper import scrape_property_data
 from .meli_request import get_new_properties_meli
+from datos_integrados.models import Property
 
 def get_new_properties_gallito():
     TEST_GALLITO_URL = 'https://www.gallito.com.uy/apto-al-frente-casi-imm-2-dormitorios-tza-con-cerramiento-inmuebles-24375924'
@@ -21,8 +22,19 @@ def load_new_properties(properties):
         # actualizar por checkeo si realmente existe o no
         already_exists = is_property_in_database(property)
         if not already_exists:
-            print("Nuevo inmueble!")
-            # crear nueva instancia de inmueble
+            property_instance = Property(
+                                    titulo=property["titulo"],
+                                    tipo=property["tipo"],
+                                    cuartos=property["cuartos"],
+                                    metros_cuadrados=property["metros_cuadrados"],
+                                    barrio=property["barrio"],
+                                    precio=property["precio"],
+                                    gastos_comunes=property["gastos_comunes"],
+                                    direccion=property["direccion"],
+                                    url="test_url"
+                                )
+
+            property_instance.save()
 
 class Command(BaseCommand):
     """Obtiene los inmuebles de Mercadolibre y el gallito y los carga.
