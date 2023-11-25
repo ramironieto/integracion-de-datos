@@ -28,6 +28,7 @@ def get_new_properties_meli():
                     "precio": result["price"],
                     "gastos_comunes": get_attribute_value(result["attributes"], "MAINTENANCE_FEE"),
                     "direccion": result["location"]["address_line"],
+                    "url": result["permalink"],
                 }
                 filtered_results.append(filtered_obj)
             return filtered_results

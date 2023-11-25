@@ -1,21 +1,18 @@
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 
-url = 'http://legendas.tv/busca/walking%20dead%20s03e02'
-
-
 def scrape_property_data(url):
-    browser = webdriver.Chrome(executable_path='/Users/santi/Documents/facultad/idatos/chromedriver-mac-arm64/chromedriver')
+    browser = webdriver.Chrome(executable_path='/Users/joaco/Downloads/chromedriver-mac-arm64/chromedriver')
     browser.get(url)
 
     inmueble = {
         'titulo': browser.find_element(By.CLASS_NAME, 'titulo').text.strip(),
         'tipo': find_label_by_icon(browser, 'fa-building'),
         'cuartos': find_label_by_icon(browser, 'fa-bed'),
-        'metros_cuadrados': find_in_caracteristicas(browser, 'Sup. Construida'),
+        'metros_cuadrados': find_in_caracteristicas(browser, 'Sup. construida:'),
         'barrio': find_label_by_icon(browser, 'fa-map-marked'),
         'precio': browser.find_element(By.CLASS_NAME, 'precio').text.strip(),
-        'gastos_comunes': find_in_caracteristicas(browser, 'Gastos comunes'),
+        'gastos_comunes': find_in_caracteristicas(browser, 'Gastos Comunes'),
         'direccion': browser.find_element(By.CLASS_NAME, 'direccion').text.strip(),
         'url': url,
     }

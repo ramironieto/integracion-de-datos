@@ -1,13 +1,37 @@
+import re
 from django.core.management.base import BaseCommand
 from .utils.scrapper import scrape_property_data
 from .meli_request import get_new_properties_meli
 from datos_integrados.models import Property
+
+def encontrar_primer_numero(texto):
+    # Utilizamos una expresión regular para buscar números, ya sean enteros o decimales
+    patron = re.compile(r'\d+(\.\d+)?')
+    
+    # Buscamos el patrón en el texto
+    coincidencia = patron.search(texto)
+    
+    # Verificamos si se encontró alguna coincidencia
+    if coincidencia:
+        # Devolvemos el número encontrado
+            return coincidencia.group().replace(".", "")
+    else:
+        # En caso de no encontrar ningún número, devolvemos None
+        return None
+
 
 def get_new_properties_gallito():
     TEST_GALLITO_URL = 'https://www.gallito.com.uy/apto-al-frente-casi-imm-2-dormitorios-tza-con-cerramiento-inmuebles-24375924'
     # Toma 10 veces la misma url, tendria que tomar los nuevos inmuebles, a mejorar
     urls_array = [TEST_GALLITO_URL for _ in range(10)]
     new_properties =  [scrape_property_data(url) for url in urls_array]
+    for new_property in new_properties:
+        new_property["tipo"] = new_property["tipo"].lower()
+        new_property["barrio"] = new_property["barrio"].lower()
+        new_property["cuartos"] = int(encontrar_primer_numero(new_property["cuartos"])) if new_property["cuartos"] is not None else None
+        new_property["metros_cuadrados"] = int(encontrar_primer_numero(new_property["metros_cuadrados"])) if new_property["metros_cuadrados"] is not None else None
+        new_property["precio"] = int(encontrar_primer_numero(new_property["precio"])) if new_property["precio"] is not None else None
+        new_property["gastos_comunes"] = int(encontrar_primer_numero(new_property["gastos_comunes"])) if new_property["gastos_comunes"] is not None else None
     return new_properties
 
 def is_property_in_database(property):
@@ -31,7 +55,7 @@ def load_new_properties(properties):
                                     precio=property["precio"],
                                     gastos_comunes=property["gastos_comunes"],
                                     direccion=property["direccion"],
-                                    url="test_url"
+                                    url=property["url"]
                                 )
 
             property_instance.save()
