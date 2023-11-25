@@ -1,24 +1,8 @@
-import re
 from django.core.management.base import BaseCommand
 from .utils.scrapper import scrape_property_data
 from .meli_request import get_new_properties_meli
 from datos_integrados.models import Property
-
-def encontrar_primer_numero(texto):
-    # Utilizamos una expresión regular para buscar números, ya sean enteros o decimales
-    patron = re.compile(r'\d+(\.\d+)?')
-    
-    # Buscamos el patrón en el texto
-    coincidencia = patron.search(texto)
-    
-    # Verificamos si se encontró alguna coincidencia
-    if coincidencia:
-        # Devolvemos el número encontrado
-            return coincidencia.group().replace(".", "")
-    else:
-        # En caso de no encontrar ningún número, devolvemos None
-        return None
-
+from .utils.encontrar_primer_numero import encontrar_primer_numero
 
 def get_new_properties_gallito():
     TEST_GALLITO_URL = 'https://www.gallito.com.uy/apto-al-frente-casi-imm-2-dormitorios-tza-con-cerramiento-inmuebles-24375924'

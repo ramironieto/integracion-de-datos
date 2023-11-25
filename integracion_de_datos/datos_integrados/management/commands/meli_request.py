@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 import requests
+from .utils.encontrar_primer_numero import encontrar_primer_numero
 
 def get_attribute_value(attributes, desired_attribute):
     for att in attributes:
@@ -21,15 +22,21 @@ def get_new_properties_meli():
             for result in results:
                 filtered_obj = {
                     "titulo": result["title"],
-                    "tipo": get_attribute_value(result["attributes"], "PROPERTY_TYPE"),
+                    "tipo": get_attribute_value(result["attributes"], "PROPERTY_TYPE").lower(),
                     "cuartos": get_attribute_value(result["attributes"], "BEDROOMS"),
                     "metros_cuadrados": get_attribute_value(result["attributes"], "COVERED_AREA")[:-3],
-                    "barrio": result["address"]["city_name"],
+                    "barrio": result["location"]["city"]['name'].lower(),
                     "precio": result["price"],
-                    "gastos_comunes": get_attribute_value(result["attributes"], "MAINTENANCE_FEE"),
                     "direccion": result["location"]["address_line"],
                     "url": result["permalink"],
                 }
+                
+                response_detail =  requests.get(f'https://api.mercadolibre.com/items/{result["id"]}')
+                if response_detail.status_code == 200:
+                    result_detail = response_detail.json()
+                    gastos_comunes = get_attribute_value(result_detail["attributes"], "MAINTENANCE_FEE")
+                    filtered_obj["gastos_comunes"] = encontrar_primer_numero(gastos_comunes) if gastos_comunes else 0
+
                 filtered_results.append(filtered_obj)
             return filtered_results
         else:
